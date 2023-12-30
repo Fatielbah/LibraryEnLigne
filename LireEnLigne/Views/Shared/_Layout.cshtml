@@ -27,6 +27,26 @@
             cursor: pointer;
         }
 
+        .testimonial-card .card-up {
+            height: 120px;
+            overflow: hidden;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+        }
+
+        .aqua-gradient {
+            background: linear-gradient(40deg, #4d3900,#000000) !important;
+        }
+
+        .testimonial-card .avatar {
+            width: 120px;
+            margin-top: -60px;
+            overflow: hidden;
+            border: 5px solid #fff;
+            border-radius: 50%;
+        }
+        
+    </style>
   
 </head>
 <body>
@@ -41,13 +61,34 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Livre" asp-action="LivreIndex">Livres</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Auteur" asp-action="AuteursIndex">Auteurs</a>
                         </li>
                        
                     </ul>
+                    <form >
+                        <div class="search-container"   >
+                            <input type="text" placeholder="Recherche..." style="border-radius: 50px 50px;">
+                            <button class="btn btn-dark" type="submit" style="border-radius: 50px 50px;">Rechercher</button>
+                        </div>
+                    </form>
+                    <div style="margin-left: 100px;"></div>
+                    
+                    <div style="margin-left: 10px;"></div>
+
+                    <a class="btn btn-outline-dark" href="/user/login" style="border-radius: 50px 50px;color:black;">
+                            Se Connecter
+                            <i class="bi-person-fill me-1"></i>
+                        </a>
+                    
+
+
+
                 </div>
             </div>
         </nav>
