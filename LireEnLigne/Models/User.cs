@@ -25,6 +25,8 @@ namespace LireEnLigne.Models
 		[Required]
 		[DataType(DataType.Password)]
 		public required string Password { get; set; }
+
+		public required byte[] Salt { get; set; }
 		[Required]
 		public Role? Role { get; set; }
 
