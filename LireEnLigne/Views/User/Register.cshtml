@@ -1,0 +1,75 @@
+﻿
+@model LireEnLigne.Views.User.RegisterModel
+@{
+}
+
+
+<section class="ftco-section">
+	<div class="container">
+		<div class="row justify-content-center">
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-md-7 col-lg-5">
+				<div class="login-wrap p-4 p-md-5">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="fa fa-user-o"></span>
+					</div>
+					<h3 class="text-center mb-4">Créer un nouveau compte</h3>
+					<form action="/User/Register" class="login-form" method="post" role="form">
+						<div class="form-group row">
+							<label for="nom" class="col-sm-2 col-form-label">Nom</label>
+							<input type="text" class="form-control rounded-left" asp-for="Nom" required>
+						</div>
+						<div class="form-group row">
+							<label for="prenom" class="col-sm-2 col-form-label">Prénom</label>
+
+							<input type="text" class="form-control rounded-left" asp-for="Prenom" required>
+						</div>
+						<div class="form-group row">
+							<label for="phone" class="col-sm-2 col-form-label">Numéro de téléphone</label>
+
+							<input type="text" class="form-control rounded-left" asp-for="NumeroTelephone" required>
+						</div>
+						<div class="form-group row">
+							<label for="adress" class="col-sm-2 col-form-label">Addresse</label>
+
+							<input type="text" class="form-control rounded-left" asp-for="Adresse" required>
+						</div>
+						<div class="form-group row">
+							<label for="email" class="col-sm-2 col-form-label">Email</label>
+
+							<input type="text" class="form-control rounded-left" asp-for="Email" required>
+						</div>
+						<div class="form-group d-flex row">
+							<label for="password" class="col-sm-2 col-form-label">Mot de passe</label>
+
+							<input type="password" class="form-control rounded-left" asp-for="Password" required>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="form-control btn btn-primary rounded submit px-3">Login</button>
+						</div>
+						<div class="form-group d-md-flex">
+							-->
+							<!--
+								<div class="w-50">
+															<label class="checkbox-wrap checkbox-primary">
+																Remember Me
+																<input type="checkbox" checked>
+																<span class="checkmark"></span>
+															</label>
+														</div>
+							-->
+							<!--
+							>
+														<div class="w-50 text-md-right">
+															<a href="#">Forgot Password</a>
+														</div>
+														-->
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

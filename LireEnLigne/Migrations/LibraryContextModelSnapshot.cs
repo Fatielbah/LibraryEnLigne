@@ -3,6 +3,7 @@ using System;
 using LireEnLigne.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -40,7 +41,8 @@ namespace LireEnLigne.Migrations
                     b.Property<DateTime>("dateRetourEffective")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("EmpruntID");
+                    b.HasKey("EmpruntID")
+                        .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.HasIndex("ExemplaireID");
 
@@ -59,16 +61,19 @@ namespace LireEnLigne.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("Langue")
-                        .HasColumnType("int");
+                    b.Property<string>("Langue")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("LivreID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.HasKey("ExemplaireID");
+                    b.HasKey("ExemplaireID")
+                        .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.HasIndex("LivreID");
 
@@ -84,8 +89,8 @@ namespace LireEnLigne.Migrations
                     b.Property<DateTime>("DatePublication")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("Genre")
-                        .HasColumnType("int");
+                    b.Property<string>("Genre")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Isbn")
                         .IsRequired()
@@ -105,7 +110,8 @@ namespace LireEnLigne.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("LivreID");
+                    b.HasKey("LivreID")
+                        .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.ToTable("Livre", (string)null);
                 });
@@ -131,7 +137,8 @@ namespace LireEnLigne.Migrations
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.HasKey("ReservationID");
+                    b.HasKey("ReservationID")
+                        .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.HasIndex("ExemplaireID");
 
@@ -170,10 +177,12 @@ namespace LireEnLigne.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
                     b.ToTable("User", (string)null);
                 });

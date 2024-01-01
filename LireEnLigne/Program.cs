@@ -1,7 +1,7 @@
 
+using LireEnLigne.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
-
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -31,13 +31,19 @@ if (!app.Environment.IsDevelopment())
 	app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();
 
 app.UseAuthorization();
+app.UseAuthentication();
+
+
+
+
 
 app.MapControllerRoute(
 	name: "default",
