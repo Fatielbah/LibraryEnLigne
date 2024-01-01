@@ -3,7 +3,12 @@
 @{
 }
 
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
 <section class="ftco-section">
 	<div class="container">
 		<div class="row justify-content-center">
@@ -16,56 +21,41 @@
 					</div>
 					<h3 class="text-center mb-4">Créer un nouveau compte</h3>
 					<form action="/User/Register" class="login-form" method="post" role="form">
-						<div class="form-group row">
-							<label for="nom" class="col-sm-2 col-form-label">Nom</label>
+						<div class="form-group">
+							<label for="Nom">Nom</label>
 							<input type="text" class="form-control rounded-left" asp-for="Nom" required>
 						</div>
-						<div class="form-group row">
-							<label for="prenom" class="col-sm-2 col-form-label">Prénom</label>
-
-							<input type="text" class="form-control rounded-left" asp-for="Prenom" required>
-						</div>
-						<div class="form-group row">
-							<label for="phone" class="col-sm-2 col-form-label">Numéro de téléphone</label>
-
-							<input type="text" class="form-control rounded-left" asp-for="NumeroTelephone" required>
-						</div>
-						<div class="form-group row">
-							<label for="adress" class="col-sm-2 col-form-label">Addresse</label>
-
+						
+							<div class="form-group">
+								<label for="Prenom">Prénom</label>
+								<input type="text" class="form-control rounded-left" asp-for="Prenom" required>
+							</div>
+							<div class="form-group">
+								<label for="phone">Numéro de téléphone</label>
+								<input type="text" class="form-control rounded-left" asp-for="NumeroTelephone" required>
+							</div>
+						<div class="form-group">
+							<label for="Adresse">Adresse</label>
 							<input type="text" class="form-control rounded-left" asp-for="Adresse" required>
 						</div>
-						<div class="form-group row">
-							<label for="email" class="col-sm-2 col-form-label">Email</label>
 
-							<input type="text" class="form-control rounded-left" asp-for="Email" required>
+						<div class="form-group">
+							<label for="Email">Email</label>
+							<input type="email" class="form-control rounded-left" asp-for="Email" required>
 						</div>
-						<div class="form-group d-flex row">
-							<label for="password" class="col-sm-2 col-form-label">Mot de passe</label>
-
+						<div class="form-group ">
+							<label for="exampleInputEmail1">Mot de passe</label>
 							<input type="password" class="form-control rounded-left" asp-for="Password" required>
 						</div>
 						<div class="form-group">
-							<button type="submit" class="form-control btn btn-primary rounded submit px-3">Login</button>
+							<button type="submit" class="form-control btn btn-primary rounded submit px-3">S'enregistrer</button>
+							<!--<input type="button" class="form-control btn btn-primary rounded submit px-3" value="Se connecter" onclick="location.href='@Url.Action("OnLogin", "UserController")'" />-->
 						</div>
-						<div class="form-group d-md-flex">
-							-->
-							<!--
-								<div class="w-50">
-															<label class="checkbox-wrap checkbox-primary">
-																Remember Me
-																<input type="checkbox" checked>
-																<span class="checkmark"></span>
-															</label>
-														</div>
-							-->
-							<!--
-							>
-														<div class="w-50 text-md-right">
-															<a href="#">Forgot Password</a>
-														</div>
-														-->
+						<div class="form-group ">
 
+							<div class="text-md-left">
+								<p>Vous avez déjà un compte? <a href="/user/login">Se connecter</a></p>
+							</div>
 						</div>
 					</form>
 				</div>
