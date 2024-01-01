@@ -6,6 +6,7 @@ using LireEnLigne.Data;
 using LireEnLigne.Views.User;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
 
 namespace LireEnLigne.Controllers
 {
@@ -105,47 +106,22 @@ namespace LireEnLigne.Controllers
 					iterationCount: 100000,
 					numBytesRequested: 256 / 8));
 
-				//Console.WriteLine($"Hashed: {hashed}");
-
+				Console.WriteLine($"Hashed: {hashedPassword}");
+				
+				
 				//add User to the database
-				_context.Users.Add(new User { Nom = model.Nom, Prenom = model.Prenom, Email = model.Email, Adresse = model.Adresse, Password = hashedPassword, NumeroTelephone = model.NumeroTelephone });
+				_context.Users.Add(new User { Nom = model.Nom, Prenom = model.Prenom, Email = model.Email, Adresse = model.Adresse, Password = hashedPassword, NumeroTelephone = model.NumeroTelephone , Role = Role.ADHERANT });
 				await _context.SaveChangesAsync();
+
+				//redirect to the login page
+				return RedirectToAction("Login", "User");
 			}
 			//   return View(model)
 			return Ok("Utilisateur enregistré");
-
+			
 
 		}
-		//[HttpPost]
-		//	[ValidateAntiForgeryToken]
-		/*	public async Task<IActionResult> Register(RegisterModel model)
-			{
-				if (ModelState.IsValid)
-				{
-					//create a new user
-					var user = new User
-					{
-						Email = model.Email,
-						Password = model.Password,
-						Nom = model.Nom,
-						Prenom = model.Prenom,
-						Adresse = model.Adresse,
-						NumeroTelephone = model.NumeroTelephone,
-						Role = Role.ADHERANT
-
-					};
-
-					//save the new user to the database
-					_context.Users.Add(user);
-					await _context.SaveChangesAsync();
-
-					//redirect to the home page
-					return RedirectToAction("Index", "Home");
-				}
-
-
-				return View(model);
-			}*/
+	
 
 
 

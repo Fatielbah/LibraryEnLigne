@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LireEnLigne.Views.User
 {
-    public class RegisterModel : PageModel
-    {
+    public class RegisterModel
+	{ 
 		
 			[Required]
 			public required string Nom { get; set; }
