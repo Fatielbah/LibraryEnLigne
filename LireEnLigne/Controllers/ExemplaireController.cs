@@ -5,6 +5,12 @@ namespace LireEnLigne.Controllers
 {
 	public class ExemplaireController : Controller
 	{
+		private LibraryContext _context;
+
+		public ExemplaireController(LibraryContext context)
+		{
+			_context = context;
+		}
 		// GET: ExemplaireController
 		public ActionResult Index()
 		{
@@ -88,5 +94,34 @@ namespace LireEnLigne.Controllers
 			//à developper
 			return View();
 		}
+
+
+		//Trouver tous les exemplaires d'un livre by livreId
+
+		public async Task<IActionResult> GetExemplairesByLivreId(int? livreId)
+		{
+			if(livreId == null || _context.Exemplaires == null) {
+				return NotFound();
+
+			}
+
+			var exemplaires =await _context.Exemplaires.Where(e => e.LivreID == livreId).ToListAsync();
+
+			if (exemplaires.Any())
+			{
+
+				//exemplaires contient tous les exemplaires du livre spécifié
+				//à developper
+				return View();// retourner tous les exemplaires 
+
+			}
+			else
+			{
+				//Lorsque aucun exemplaire n'a été trouvé pour ce livre
+				return NotFound();
+			}
+		}
+		
+
 	}
 }

@@ -19,8 +19,8 @@ namespace LireEnLigne.Data
 			public DbSet<Emprunt> Emprunts { get; set; }
 			public DbSet<Reservation> Reservations { get; set; }
 			public DbSet<Exemplaire> Exemplaires { get; set; }
-
-			protected override void OnModelCreating(ModelBuilder modelBuilder)
+			public DbSet<Auteur> Auteurs { get; set; }
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
 			{
 				//auto generated user id
 				modelBuilder.Entity<User>()
@@ -35,9 +35,13 @@ namespace LireEnLigne.Data
 				   .HasKey(e => e.ExemplaireID)
 				   .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
+			//auto generated auteur id
+			modelBuilder.Entity<Auteur>()
+			   .HasKey(e => e.AuteurID)
+			   .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-				// auto generated emprunt id
-				modelBuilder.Entity<Emprunt>()
+			// auto generated emprunt id
+			modelBuilder.Entity<Emprunt>()
 				   .HasKey(em => em.EmpruntID)
 				   .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 				// auto generated reservation id
@@ -51,10 +55,11 @@ namespace LireEnLigne.Data
 				modelBuilder.Entity<Emprunt>().ToTable("Emprunt");
 				modelBuilder.Entity<Reservation>().ToTable("Reservation");
 				modelBuilder.Entity<Exemplaire>().ToTable("Exemplaire");
+				modelBuilder.Entity<Auteur>().ToTable("Auteur");
 
-				//configuring enum
+			//configuring enum
 
-				modelBuilder.Entity<User>()
+			modelBuilder.Entity<User>()
 				.Property(u => u.Role)
 				.HasConversion<int>(); // Convert user role enum to int for storage
 
