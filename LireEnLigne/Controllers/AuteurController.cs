@@ -8,5 +8,21 @@ namespace LireEnLigne.Controllers
 		{
 			return View();
 		}
+
+		[HttpGet("/AllAuteurs")]
+		public void GetAllAuteurs()
+		{
+
+		}
+
+		[HttpGet]
+		public void GetAuteurByName(string name)
+		{
+
+		}
+
+		
+
+		
 	}
 }

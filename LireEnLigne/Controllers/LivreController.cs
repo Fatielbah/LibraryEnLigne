@@ -10,5 +10,29 @@ namespace LireEnLigne.Controllers
 		{
 			return View();
 		}
+
+		[HttpGet]
+		public void GetLivreByAuteur(Auteur auteur)
+		{
+
+		}
+
+		[HttpGet]
+		public void GetLivreByNameLike(string nameLike)
+		{
+
+		}
+
+		[HttpGet]
+		public void GetLivreStartWith(string startWith)
+		{
+
+		}
+
+	/*	[HttpGet]
+		public void GetLivre*/
+
+		
+
 	}
 }

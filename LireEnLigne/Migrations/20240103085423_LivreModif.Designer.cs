@@ -4,6 +4,7 @@ using LireEnLigne.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,32 +12,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LireEnLigne.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20240103085423_LivreModif")]
+    partial class LivreModif
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("LireEnLigne.Models.Auteur", b =>
-                {
-                    b.Property<int>("AuteurID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("AuteurName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Resume")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AuteurID");
-
-                    b.ToTable("Auteur");
-                });
 
             modelBuilder.Entity("LireEnLigne.Models.Emprunt", b =>
                 {
@@ -104,9 +89,6 @@ namespace LireEnLigne.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AuteurID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DatePublication")
                         .HasColumnType("datetime(6)");
 
@@ -137,8 +119,6 @@ namespace LireEnLigne.Migrations
 
                     b.HasKey("LivreID")
                         .HasAnnotation("MySql: ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
-
-                    b.HasIndex("AuteurID");
 
                     b.ToTable("Livre", (string)null);
                 });
@@ -248,17 +228,6 @@ namespace LireEnLigne.Migrations
                     b.Navigation("Livre");
                 });
 
-            modelBuilder.Entity("LireEnLigne.Models.Livre", b =>
-                {
-                    b.HasOne("LireEnLigne.Models.Auteur", "Auteur")
-                        .WithMany("Livres")
-                        .HasForeignKey("AuteurID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Auteur");
-                });
-
             modelBuilder.Entity("LireEnLigne.Models.Reservation", b =>
                 {
                     b.HasOne("LireEnLigne.Models.Exemplaire", "Exemplaire")
@@ -276,11 +245,6 @@ namespace LireEnLigne.Migrations
                     b.Navigation("Exemplaire");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("LireEnLigne.Models.Auteur", b =>
-                {
-                    b.Navigation("Livres");
                 });
 
             modelBuilder.Entity("LireEnLigne.Models.Exemplaire", b =>

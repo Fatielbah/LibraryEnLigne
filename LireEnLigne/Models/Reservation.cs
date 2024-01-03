@@ -8,7 +8,7 @@
 		public DateTime DateAnnulation { get; set; }
 		public int ExemplaireID { get; set; }
 		public int UserID { get; set; }
-		public User User { get; set; }
-		public Exemplaire Exemplaire { get; set; }
+		public User? User { get; set; }
+		public Exemplaire? Exemplaire { get; set; }
 	}
 }
