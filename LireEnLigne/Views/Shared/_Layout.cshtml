@@ -80,11 +80,21 @@
                     <div style="margin-left: 100px;"></div>
                     
                     <div style="margin-left: 10px;"></div>
-
-                    <a class="btn btn-outline-dark" href="/user/login" style="border-radius: 50px 50px;color:black;">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-outline-dark" asp-controller="User" asp-action="Logout" style="border-radius: 50px 50px;color:black;">
+                            déconnexion
+                            <i class="bi-person-fill me-1"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-dark" asp-controller="User" asp-action="Login" style="border-radius: 50px 50px;color:black;">
                             Se Connecter
                             <i class="bi-person-fill me-1"></i>
                         </a>
+                    }
+                   
                     
 
 

@@ -16,22 +16,61 @@ namespace LireEnLigne.Controllers
 		{
 			_context = context;
 		}
-		[HttpGet]
+		
 		public IActionResult Login()
 		{
+			/*var currentUser = GetCurrentUser();
+			if(currentUser == null)
+			{
+				//afficher login page
+				return View();
+			}
+			else
+			{
+				//si l'utilisateur est déjà connecté redirection vers la page d'acceuil 
+				return RedirectToAction("Index", "Home");
+			}*/
+			//return FindCurrentUserAction();
+			//return View();
+			if (User.Identity.IsAuthenticated)
+			{
+				return RedirectToAction("Index", "Home");
+			}
+
 			return View();
+
 		}
 
-		[HttpGet]
+
 		public IActionResult Register()
 		{
+			/*	var currentUser = GetCurrentUser();
+				if(currentUser != null)
+				{
+					Console.WriteLine(currentUser.Id);
+					return RedirectToAction("Index", "Home");
+
+				}
+				else
+				{
+					return View();
+
+				}*/
+			if (User.Identity.IsAuthenticated)
+			{
+				return RedirectToAction("Index", "Home");
+			}
+
 			return View();
+
+
 		}
 
 
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel model)
 		{
+			
 
 			if (ModelState.IsValid)
 			{
@@ -143,9 +182,50 @@ namespace LireEnLigne.Controllers
 			
 
 		}
-	
+
+        //déconnexion | perform log out
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
 
 
+        //get current logged in user
 
+        public User GetCurrentUser()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+			if (claim == null || !int.TryParse(claim.Value, out int userId))
+			{
+				return null;
+			}
+
+			var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+			return user;
+		}
+
+
+		//retreive the current in another action 
+
+		public IActionResult FindCurrentUserAction()
+		{
+			var currentUserEmail = User.Identity.Name;
+			//using email to query the database
+			var currentUser = _context.Users.FirstOrDefault(u => u.Email == currentUserEmail);
+			if(currentUser != null) {
+				return RedirectToAction("Index", "Home");
+				
+			}
+			else
+			{
+				//if user not found
+				//redirection vers login page
+				return RedirectToAction("Login", "User");
+			}
+		}
 	} }
 

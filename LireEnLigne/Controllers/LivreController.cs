@@ -17,18 +17,21 @@ namespace LireEnLigne.Controllers
 		}
 
 
-
+		//search for books by a partial name match.
 		[HttpGet]
-		public void GetLivreByNameLike(string nameLike)
+		public async Task<IActionResult> GetLivreByNameLike(string nameLike)
 		{
 
+			if(nameLike == null)
+			{
+				return NotFound();
+			}
+			var LivresByNameLike = await _context.Livres.Where(l => EF.Functions.Like(l.Titre, $"%{nameLike}%")).ToListAsync();
+			return View();//retourner la liste des livres
+	
 		}
 
-		[HttpGet]
-		public void GetLivreStartWith(string startWith)
-		{
-
-		}
+		
 
 		/*	[HttpGet]
 			public void GetLivre*/
@@ -54,6 +57,7 @@ namespace LireEnLigne.Controllers
 
 		public async Task<IActionResult> GetLivresByLettre(char lettre)
 		{
+			
 			var livresByLetter = await _context.Livres.Where(l => l.Titre.StartsWith(lettre)).ToListAsync();
 
 			if(livresByLetter != null)

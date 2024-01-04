@@ -1,6 +1,8 @@
 ﻿using LireEnLigne.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace LireEnLigne.Controllers
 {
@@ -9,11 +11,14 @@ namespace LireEnLigne.Controllers
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
-        {
+		{
             _logger = logger;
-        }
+			//var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value
 
-        public IActionResult Index()
+
+		}
+
+		public IActionResult Index()
         {
             return View();
         }
