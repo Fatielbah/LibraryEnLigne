@@ -3,9 +3,13 @@
 	public class Reservation
 	{
 		public int ReservationID { get; set; }
-		public DateTime DateDemande { get; set; }
-		public DateTime DateReservation { get; set; }
-		public DateTime DateAnnulation { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime DateDemande { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DateReservation { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DateAnnulation { get; set; }
 		public int ExemplaireID { get; set; }
 		public int UserID { get; set; }
 		public User? User { get; set; }
