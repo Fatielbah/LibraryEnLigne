@@ -11,14 +11,29 @@ namespace LireEnLigne.Controllers
 			_context = context;
 		}
 
-		public IActionResult LivreIndex()
+		/*public IActionResult LivreIndex()
 		{
 			return View();
+		}*/
+		public async Task<IActionResult> LivreIndex()
+		{
+
+			//récupérer tous les Livres
+			var allLivres = await _context.Livres.ToListAsync();
+			if (allLivres.Any())
+			{
+				return View(allLivres); // retourner la liste des Livres
+
+			}
+			else
+			{
+				// à developper
+				//Aucun auteur trouvé dans la base de données
+				return NotFound();
+			}
 		}
-
-
-		//search for books by a partial name match.
-		[HttpGet]
+            //search for books by a partial name match.
+            [HttpGet]
 		public async Task<IActionResult> GetLivreByNameLike(string nameLike)
 		{
 

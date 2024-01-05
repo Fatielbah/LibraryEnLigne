@@ -15,19 +15,19 @@ namespace LireEnLigne.Controllers
 			_context = context;
 		}
 		
-		public IActionResult AuteursIndex()
+		/*public IActionResult AuteursIndex()
 		{
 			return View();
-		}
+		}*/
 
-		public async Task<IActionResult> GetAllAuteurs()
+		public async Task<IActionResult> AuteursIndex()
 		{
 
 			//récupérer tous les auteurs 
 			var allAuteurs =await _context.Auteurs.ToListAsync();
 			if (allAuteurs.Any())
 			{
-				return View(); // retourner la liste des auteurs
+				return View(allAuteurs); // retourner la liste des auteurs
 
 			}
 			else

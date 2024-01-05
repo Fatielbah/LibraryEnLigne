@@ -9,6 +9,8 @@
         Technique,
         Droit,
         Santé,
-        
-	}
+        Art,
+        Economie
+
+    }
 }

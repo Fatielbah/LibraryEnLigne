@@ -5,28 +5,41 @@
         <div class="testimonial-header text-center">
             <h1 class="display-5 mb-5 text-dark">Nos Auteurs</h1>
         </div>
+        <div class="row">
         <!-- card auteur -->
+        @if (Model != null)
+        {
+        foreach (var auteur in Model)
+    {
         <div class="col-md-3">
             <section style="max-width: 23rem;">
                 <div class="card testimonial-card mt-2 mb-3">
-                    <div class="card-up aqua-gradient"></div>
+                    <div class="card-up aqua-gradient" s></div>
                     <div class="avatar mx-auto white">
-                        <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20%2831%29.jpg"
+                        <!-- img 250px/250px -->
+                        <img src="~/img/user.jpg"
                              class="rounded-circle img-fluid" alt="woman avatar">
                     </div>
                     <div class="card-body text-center">
-                        <h4 class="card-title font-weight-bold">Nom auteur</h4>
+                                <h4 class="card-title font-weight-bold">@auteur.AuteurName</h4>
                         <hr>
                         <p>
-                            <i class="fas fa-quote-left"></i> 
-                            les information sur l'auteur
+                            <i class="fas fa-quote-left"></i>
+                                    @auteur.Resume
                         </p>
-                        <a class="btn btn-outline-dark mt-auto" asp-area="" asp-controller="Home" asp-action="CatLivres">livres</a>
+                                    <a class="btn btn-outline-dark mt-auto" asp-route-AuteurID="@auteur.AuteurID" asp-area="" asp-controller="Home" asp-action="CatLivresAuteur">livres</a>
                     </div>
                 </div>
             </section>
         </div>
+        }
+            }
+            else
+            {
+                <p>No authors found.</p>
+            }
         <!-- card auteur End -->
+        </div>
     </div>
 </div>
 <!-- Tastimonial End -->

@@ -39,27 +39,50 @@
 </div>
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <div class="col mb-5">
-                <div class="card h-100" style="width:150px;height:300px">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="../img/sante.jpg" alt="..." />
-                    <!-- Product details-->
+        
+            <div class="row" >
+            
+            <!-- card livre start-->
+            @if (Model != null)
+        {
+        foreach (var livre in Model)
+                {
+                    <div class="col-md-3" style="margin-top:20px;">
+                <div class="card h-100" >
+                    <!-- image-->
+                            @if (livre.Image != null && livre.Image.Length > 0)
+                            {
+                                <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(livre.Image)" alt="Book Image" style="width:230px;height:300px; border : 2px solid black;" />
+                            }
+                            else
+                            {
+                                <img class="card-img-top" src="path/to/placeholder-image.jpg" alt="Placeholder Image" />
+                            }
+                    <!-- details-->
                     <div class="card-body p-4">
                         <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Santé</h5>
+                            <!--Product name-->
+                            <h5 class="fw-bolder">@livre.Titre</h5>
                         </div>
                     </div>
-                    <!-- Product actions-->
+                    <!--  actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-area="" asp-controller="Home" asp-action="Aproposdecelivre">À propos</a></div>
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-area="" asp-route-id="@livre.LivreID" asp-controller="Home" asp-action="Aproposdecelivre">À propos</a></div>
                     </div>
                 </div>
             </div>
-     
+                }
+            }
+            else
+            {
+                <p>No live found.</p>
+            }
+               
+
+            <!-- card livre end-->
             
         </div>
+        
     </div>
 </section>
 <script src="~/js/jquery.min.js"></script>
