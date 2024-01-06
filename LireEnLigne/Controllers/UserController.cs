@@ -168,6 +168,24 @@ namespace LireEnLigne.Controllers
         }
 
 
-       
-	} }
+        //get current user
+        //get current logged in user
+
+        public User GetCurrentUser()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null || !int.TryParse(claim.Value, out int userId))
+            {
+                return null;
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+            return user;
+        }
+
+
+    } }
 

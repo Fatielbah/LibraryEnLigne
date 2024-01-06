@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LireEnLigne.Controllers
 {
@@ -15,6 +16,23 @@ namespace LireEnLigne.Controllers
             return View();
         }
 
+
+        //get current logged in user
+
+        public User GetCurrentUser()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim == null || !int.TryParse(claim.Value, out int userId))
+            {
+                return null;
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+            return user;
+        }
 
         //demander une reservation
         //la réservation se fait pour un exemplaire d'un livre et non pas du livre lui meme
@@ -33,8 +51,9 @@ namespace LireEnLigne.Controllers
 
                 return RedirectToAction("Login", "User");
             }
-            
-            var currentUser = HttpContext.User;
+
+            // var currentUser = HttpContext.User;
+            var currentUser = GetCurrentUser();
 
             //On doit trouver l'exemplaire qu'on veut réserver
 
@@ -57,7 +76,7 @@ namespace LireEnLigne.Controllers
                     DateDemande = DateTime.Now,
                     DateReservation = DateTime.Now,
                     ExemplaireID = exemplaire.ExemplaireID,
-                    //   UserID = currentUser.UserId;
+                    UserID = currentUser.Id
                     //a fixer
                 };
                 //Enregistrer la réservation 
