@@ -16,9 +16,33 @@ namespace LireEnLigne.Controllers
             _httpContextAccessor = httpContextAccessor;
             _mailService = mailService;
         }
-        public IActionResult Index()
-        {
+        public IActionResult ConfirmMessage() { 
             return View();
+        }
+        public IActionResult ReservationIndex(int ExemplaireID)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // Redirection vers la page de connexion
+                return RedirectToAction("Login", "User");
+            }
+            else
+            {
+                // Utilisez Entity Framework pour obtenir les détails de l'exemplaire et son livre associé
+                var exemplaireDetails = _context.Exemplaires
+                    .Include(e => e.Livre) // Charger les détails du livre associé
+                    .FirstOrDefault(e => e.ExemplaireID == ExemplaireID);
+
+                // Vérifiez si l'exemplaire a été trouvé
+                if (exemplaireDetails == null)
+                {
+                    // Exemplaire non trouvé, peut-être redirigez vers une page d'erreur
+                    return RedirectToAction("Erreur");
+                }
+
+                // Affichez les détails de l'exemplaire et son livre associé dans la vue
+                return View(exemplaireDetails);
+            }
         }
 
 
@@ -64,7 +88,7 @@ namespace LireEnLigne.Controllers
         //demander une reservation
         //la réservation se fait pour un exemplaire d'un livre et non pas du livre lui meme
         [HttpPost]
-        public async Task<IActionResult> DemanderReservation(int exemplaireId, DateTime dateDemande)
+        public async Task<IActionResult> DemanderReservation(int exemplaireId, DateTime dateDemande,DateTime DateAnnulation)
         {
           //  return View();
             //récupérer l'utilisateur qui est actuellement connecté
@@ -118,8 +142,10 @@ namespace LireEnLigne.Controllers
                     DateDemande = dateDemande,
                     DateReservation = DateTime.Now,
                     ExemplaireID = exemplaire.ExemplaireID,
-                    UserID = currentUser.Id
-                  
+                    UserID = currentUser.Id,
+                    DateAnnulation= DateAnnulation
+
+
                 };
 
             //ajouter la réservation ) l'exemplaire
@@ -142,7 +168,9 @@ namespace LireEnLigne.Controllers
                 mailData.EmailBody = "Votre réservation est effectuée avec succès";
                 _mailService.SendMail(mailData);
                 Ok("Demande de réservation effectuée avec succès");
-                return RedirectToAction("Index", "Home");
+                
+
+                return RedirectToAction("ConfirmMessage", "Reservation");
 
             }
             catch(DbUpdateException)

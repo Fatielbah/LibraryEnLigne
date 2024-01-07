@@ -1,0 +1,62 @@
+﻿<!--afficher exemplaire-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            @if (Model != null)
+            {
+                <div class="col-md-4">
+                    @if (Model.Livre != null && Model.Livre.Image != null && Model.Livre.Image.Length > 0)
+                    {
+                        <img style="width:350px;height:450px;" class="card-img-top mb-5 mb-md-0" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Livre.Image)" alt="Book Image" />
+                    }
+                </div>
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bolder">@Model.Livre.Titre</h1>
+                    <div class="small mb-1">Langue: @Model.Langue</div>
+
+                    <div class="fs-5 mb-5">
+                        <span class="text-decoration-line-through"></span>
+                        <span>Edition: @Model.Edition</span>
+                    </div>
+                    <p class="lead">@Model.Livre.Resume</p>
+                    <form onsubmit="return validateDate()" action="@Url.Action("DemanderReservation", "Reservation")" method="post">
+                        <div >
+
+                            @if (Model != null)
+                            {
+                                <input type="hidden" name="exemplaireId" value="@Model.ExemplaireID" />
+                            }<label>Date de Demande Reservation</label>
+                            <input style="width:300px;" class="form-control text-center " id="confirme" name="dateDemande" type="date"  />
+                            <label>Date de Annulation</label>
+                            <input style="width:300px;"  class="form-control text-center me-3" id="confirmeAnnulation" name="DateAnnulation" type="date" />
+                            <button class="btn btn-outline-dark flex-shrink-0" type="submit" style="margin-top:20px;">
+                                <i class="bi-cart-fill me-1"></i>
+                                Confirmer
+                            </button>
+                        </div>
+                        <p id="cofirmeErrorMessage" class="text-danger"></p>
+                    </form>
+                    <script>
+                        function validateDate() {
+                            var searchTerm = document.getElementById('confirme').value;
+                            var searchTerm2 = document.getElementById('confirmeAnnulation').value;
+                            var errorMessageElement = document.getElementById('cofirmeErrorMessage');
+
+                            if (searchTerm.trim() === "" || searchTerm2.trim() === "") {
+                                errorMessageElement.textContent = "Champ de date vide !";
+                                return false; // Empêche l'envoi du formulaire
+                            }
+
+                            // Réinitialiser le message d'erreur s'il y en avait un précédemment
+                            errorMessageElement.textContent = "";
+                            return true; // Soumet le formulaire si le champ n'est pas vide
+                        }
+                    </script>
+                    
+                </div>
+            }
+            
+
+        </div>
+    </div>
+</section>
