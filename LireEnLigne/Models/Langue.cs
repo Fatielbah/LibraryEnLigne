@@ -6,6 +6,7 @@
 		Anglais,
 		Espagnol,
 		Arabe,
-		Portugais
-	}
+		Portugais,
+        italien
+    }
 }

@@ -10,30 +10,56 @@ namespace LireEnLigne.Controllers
 		{
 			_context = context;
 		}
+        [HttpGet]
+        public async Task<IActionResult> LivreIndex(Genre? genre, string searchTerm)
+        {
+            List<Livre> livres;
 
-		/*public IActionResult LivreIndex()
-		{
-			return View();
-		}*/
-		public async Task<IActionResult> LivreIndex()
-		{
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                // If a search term is provided, filter the results
+                livres = await _context.Livres
+                    .Where(l => EF.Functions.Like(l.Titre, $"%{searchTerm}%"))
+                    .ToListAsync();
+            }
+            else if (genre.HasValue)
+            {
+                // Fetch the books based on the selected genre
+                livres = await _context.Livres.Where(l => l.Genre == genre).ToListAsync();
+            }
+            else
+            {
+                // Retrieve all Livres
+                livres = await _context.Livres.ToListAsync();
+            }
+            if (livres.Count == 0)
+            {
+                ViewData["NoBooksMessage"] = "Aucun livre trouvé.";
+            }
 
-			//récupérer tous les Livres
-			var allLivres = await _context.Livres.ToListAsync();
-			if (allLivres.Any())
-			{
-				return View(allLivres); // retourner la liste des Livres
+            return View(livres);
+        }
 
-			}
-			else
-			{
-				// à developper
-				//Aucun auteur trouvé dans la base de données
-				return NotFound();
-			}
-		}
-            //search for books by a partial name match.
-            [HttpGet]
+        /*public IActionResult LivreIndex(Genre? genre)
+        {
+            List<Livre> livres;
+
+            if (genre.HasValue)
+            {
+                // Fetch the books based on the selected genre
+                livres = _context.Livres.Where(l => l.Genre == genre).ToList();
+            }
+            else
+            {
+                // récupérer tous les Livres
+                livres = _context.Livres.ToList();
+            }
+
+            return View("LivreIndex", livres);
+        }*/
+
+        //search for books by a partial name match.
+        [HttpGet]
 		public async Task<IActionResult> GetLivreByNameLike(string nameLike)
 		{
 

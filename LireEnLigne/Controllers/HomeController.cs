@@ -33,8 +33,10 @@ namespace LireEnLigne.Controllers
             // Fetch the books based on the selected genre
             var livres = _context.Livres.Where(l => l.Genre == genre).ToList();
 
+            
             return View(livres);
         }
+
         public IActionResult CatLivresAuteur(int AuteurID)
         {
             // Fetch the books based on the selected genre
@@ -52,13 +54,16 @@ namespace LireEnLigne.Controllers
 
         public IActionResult Aproposdecelivre(int id)
         {
-            // Fetch the Livre based on the provided LivreID
-            var livre = _context.Livres.FirstOrDefault(l => l.LivreID == id);
+            // Fetch the Livre and its associated Exemplaire based on the provided LivreID
+            var livreWithExemplaire = _context.Livres
+                .Where(l => l.LivreID == id)
+                .Include(l => l.Exemplaires) // Assuming there's a navigation property from Livre to Exemplaire
+                .FirstOrDefault();
 
-            if (livre != null)
+            if (livreWithExemplaire != null)
             {
-                // Pass the Livre to the view
-                return View(livre);
+                // Pass the Livre and its associated Exemplaire to the view
+                return View(livreWithExemplaire);
             }
             else
             {

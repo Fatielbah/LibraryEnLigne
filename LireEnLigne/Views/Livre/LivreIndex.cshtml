@@ -15,21 +15,48 @@
         <div class="container">
             <div class="">
                 <ul class="navbar-nav ml-auto mr-md-3">
-                    <li class="nav-item active"><a href="#" class="nav-link">Aperçu</a></li>
+                    <li class="nav-item active"><a asp-controller="Livre" asp-action="LivreIndex" class="nav-link">Aperçu</a></li>
                     <li class="dropdown nav-item d-md-flex align-items-center">
-                        <a href="#" class="dropdown-toggle nav-link " id="dropdown04" data-toggle="dropdown" aria-expanded="false">
+                        <a class="dropdown-toggle nav-link " id="dropdown04" data-toggle="dropdown" aria-expanded="false">
                             Catégories
                             <b class="caret"></b>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown04">
-                            <a href="#" class="dropdown-item">Droit</a>
-                            <a href="#" class="dropdown-item">Santé</a>
-                            <a href="#" class="dropdown-item">Économie</a>
-                            <a href="#" class="dropdown-item">Finance</a>
-                            <a href="#" class="dropdown-item">Art</a>
-                            <a href="#" class="dropdown-item">Roman</a>
+                            <a class="dropdown-item" asp-route-genre="Droit" asp-controller="Livre" asp-action="LivreIndex">Droit</a>
+                            <a  class="dropdown-item" asp-route-genre="Science" asp-controller="Livre" asp-action="LivreIndex">Science</a>
+                            <a  class="dropdown-item" asp-route-genre="Economie" asp-controller="Livre" asp-action="LivreIndex">Économie</a>
+                            <a  class="dropdown-item" asp-route-genre="Finance" asp-controller="Livre" asp-action="LivreIndex">Finance</a>
+                            <a  class="dropdown-item" asp-route-genre="Art" asp-controller="Livre" asp-action="LivreIndex">Art</a>
+                            <a  class="dropdown-item" asp-route-genre="Roman" asp-controller="Livre" asp-action="LivreIndex">Roman</a>
                             
                         </div>
+                    </li>
+                    <li class="nav-item active" style="margin-top:15px;margin-left:500px;">
+                        <form method="get" action="@Url.Action("LivreIndex", "Livre")" onsubmit="return validateSearch()">
+                            <div class="search-container">
+                                <input type="text" name="searchTerm" id="searchTerm" placeholder="Recherche..." style="border-radius: 50px 50px;">
+                                <button class="btn btn-dark" type="submit" style="border-radius: 50px 50px;">Rechercher</button>
+                            </div>
+                            <p id="searchErrorMessage" class="text-danger"></p>
+                        </form>
+
+                        <script>
+                            function validateSearch() {
+                                var searchTerm = document.getElementById('searchTerm').value;
+                                var errorMessageElement = document.getElementById('searchErrorMessage');
+
+                                if (searchTerm.trim() === "") {
+                                    errorMessageElement.textContent = "Champ de recherche vide !";
+                                    return false; // Empêche l'envoi du formulaire
+                                }
+
+                                // Réinitialiser le message d'erreur s'il y en avait un précédemment
+                                errorMessageElement.textContent = "";
+                                return true; // Soumet le formulaire si le champ n'est pas vide
+                            }
+                        </script>
+
+
                     </li>
                 </ul>
             </div>
@@ -41,15 +68,15 @@
     <div class="container px-4 px-lg-5 mt-5">
         
             <div class="row" >
-            
+            @model List<LireEnLigne.Models.Livre>
             <!-- card livre start-->
-            @if (Model != null)
-        {
-        foreach (var livre in Model)
+            @if (Model != null && Model.Any())
+            {
+                foreach (var livre in Model)
                 {
                     <div class="col-md-3" style="margin-top:20px;">
-                <div class="card h-100" >
-                    <!-- image-->
+                        <div class="card h-100">
+                            <!-- image-->
                             @if (livre.Image != null && livre.Image.Length > 0)
                             {
                                 <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(livre.Image)" alt="Book Image" style="width:230px;height:300px; border : 2px solid black;" />
@@ -58,28 +85,30 @@
                             {
                                 <img class="card-img-top" src="path/to/placeholder-image.jpg" alt="Placeholder Image" />
                             }
-                    <!-- details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!--Product name-->
-                            <h5 class="fw-bolder">@livre.Titre</h5>
+                            <!-- details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!--name-->
+                                    <h5 class="fw-bolder">@livre.Titre</h5>
+                                </div>
+                            </div>
+                            <!--  actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    <a class="btn btn-outline-dark mt-auto" asp-area="" asp-route-id="@livre.LivreID" asp-controller="Home" asp-action="Aproposdecelivre">À propos</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!--  actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-area="" asp-route-id="@livre.LivreID" asp-controller="Home" asp-action="Aproposdecelivre">À propos</a></div>
-                    </div>
-                </div>
-            </div>
                 }
             }
             else
-            {
-                <p>No live found.</p>
+            { //lorsque il ya aucun livre
+                <p>Aucun livre trouvé.</p>
             }
-               
-
             <!-- card livre end-->
+
+
             
         </div>
         

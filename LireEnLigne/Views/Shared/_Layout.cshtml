@@ -71,25 +71,20 @@
                         </li>
                        
                     </ul>
-                    <form >
-                        <div class="search-container"   >
-                            <input type="text" placeholder="Recherche..." style="border-radius: 50px 50px;">
-                            <button class="btn btn-dark" type="submit" style="border-radius: 50px 50px;">Rechercher</button>
-                        </div>
-                    </form>
+                    
                     <div style="margin-left: 100px;"></div>
                     
                     <div style="margin-left: 10px;"></div>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a class="btn btn-outline-dark" asp-controller="User" asp-action="Logout" style="border-radius: 50px 50px;color:black;">
+                        <a class=" btn btn-dark bg-dark " style="color:white;border-radius: 50px 50px;" asp-controller="User" asp-action="Logout">
                             déconnexion
                             <i class="bi-person-fill me-1"></i>
                         </a>
                     }
                     else
                     {
-                        <a class="btn btn-outline-dark" asp-controller="User" asp-action="Login" style="border-radius: 50px 50px;color:black;">
+                        <a class=" btn btn-dark bg-dark " style="color:white;border-radius: 50px 50px;" asp-controller="User" asp-action="Login" >
                             Se Connecter
                             <i class="bi-person-fill me-1"></i>
                         </a>
