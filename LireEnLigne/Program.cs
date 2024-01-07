@@ -50,6 +50,7 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 //configuration du MailService
 builder.Services.AddTransient<IMailService, MailService>();
 
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

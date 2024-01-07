@@ -12,14 +12,16 @@ namespace LireEnLigne.Controllers
 	public class UserController : Controller
 	{
 		private readonly LibraryContext _context;
-		public UserController(LibraryContext context)
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		public UserController(LibraryContext context, IHttpContextAccessor httpContextAccessor)
 		{
 			_context = context;
+			_httpContextAccessor = httpContextAccessor;
 		}
-		
+
 		public IActionResult Login()
 		{
-			
+
 			if (User.Identity.IsAuthenticated)
 			{
 				return RedirectToAction("Index", "Home");
@@ -32,7 +34,7 @@ namespace LireEnLigne.Controllers
 
 		public IActionResult Register()
 		{
-			
+
 			if (User.Identity.IsAuthenticated)
 			{
 				return RedirectToAction("Index", "Home");
@@ -47,7 +49,7 @@ namespace LireEnLigne.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel model)
 		{
-			
+
 
 			if (ModelState.IsValid)
 			{
@@ -56,7 +58,7 @@ namespace LireEnLigne.Controllers
 				//var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 				//verify the hashed password
 				// Vérification du mot de passe lors de la connexion
-				
+
 				byte[] storedSalt = user.Salt;// Récupérez le salt correspondant à l'utilisateur depuis la base de données
 											  //byte[] saltBytes = Encoding.ASCII.GetBytes(storedSalt);
 											  //convertir le mot de passe saisi par l'utilisateur
@@ -72,9 +74,9 @@ namespace LireEnLigne.Controllers
 				// Comparez enteredPasswordHash avec le hachage stocké dans la base de données
 				// Si les hachages correspondent, le mot de passe est valide
 
-				if (user != null  )
+				if (user != null)
 				{
-					
+
 					string userStoredPassword = user.Password;
 					if (userStoredPassword == userPasswordHash)
 					{
@@ -97,7 +99,7 @@ namespace LireEnLigne.Controllers
 					{
 						ModelState.AddModelError(string.Empty, "password doesn't match");
 					}
-						
+
 				}
 			}
 			else
@@ -110,7 +112,7 @@ namespace LireEnLigne.Controllers
 
 
 		}
-		
+
 
 
 		[HttpPost]
@@ -118,7 +120,7 @@ namespace LireEnLigne.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				
+
 				//check if the user with the same email already exists
 				var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
 
@@ -127,6 +129,8 @@ namespace LireEnLigne.Controllers
 					return BadRequest("User with the same provided email already exists.");
 				}
 
+
+
 				//else
 
 				//Hashing the password before storing it
@@ -134,7 +138,7 @@ namespace LireEnLigne.Controllers
 				// cryptographically strong random bytes.
 				byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
 																	   //Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
-			//	String convertedSalt = Convert.ToBase64String(salt);
+																	   //	String convertedSalt = Convert.ToBase64String(salt);
 
 				// derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
 				string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -145,10 +149,10 @@ namespace LireEnLigne.Controllers
 					numBytesRequested: 256 / 8));
 
 				//Console.WriteLine($"Hashed: {hashedPassword}");
-				
-				
+
+
 				//add User to the database
-				_context.Users.Add(new User { Nom = model.Nom, Prenom = model.Prenom, Email = model.Email, Adresse = model.Adresse, Password = hashedPassword, NumeroTelephone = model.NumeroTelephone , Role = Role.ADHERANT, Salt = salt });
+				_context.Users.Add(new User { Nom = model.Nom, Prenom = model.Prenom, Email = model.Email, Adresse = model.Adresse, Password = hashedPassword, NumeroTelephone = model.NumeroTelephone, Role = Role.ADHERANT, Salt = salt });
 				await _context.SaveChangesAsync();
 
 				//redirect to the login page
@@ -156,36 +160,57 @@ namespace LireEnLigne.Controllers
 			}
 			//   return View(model)
 			return Ok("Utilisateur enregistré");
-			
+
 
 		}
 
-        //déconnexion | perform log out
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
-        }
+		//déconnexion | perform log out
+		public async Task<IActionResult> Logout()
+		{
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			return RedirectToAction("Index", "Home");
+		}
 
 
-        //get current user
-        //get current logged in user
+		//get current user
+		//get current logged in user
 
-        public User GetCurrentUser()
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+		/*  public User GetCurrentUser()
+		  {
+			  var claimsIdentity = (ClaimsIdentity)User.Identity;
+			  var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (claim == null || !int.TryParse(claim.Value, out int userId))
-            {
-                return null;
-            }
+			  if (claim == null || !int.TryParse(claim.Value, out int userId))
+			  {
+				  return null;
+			  }
 
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+			  var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
-            return user;
-        }
+			  return user;
+		  }*/
+
+		public User GetCurrentUser()
+		{
+			// Get the current HttpContext
+			HttpContext currentContext = _httpContextAccessor.HttpContext;
+
+			// Check if there is an authenticated user
+			if (currentContext.User.Identity?.IsAuthenticated == true)
+			{
+				// Get the username
+				string username = currentContext.User.Identity.Name;
+				//chercher l'utilisateur 
+
+				var user = _context.Users.FirstOrDefault(u => u.Email == username);
+				return user;
+			}
+			return null;
 
 
-    } }
+
+
+		}
+	}
+}
 

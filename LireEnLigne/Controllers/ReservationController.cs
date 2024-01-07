@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LireEnLigne.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace LireEnLigne.Controllers
@@ -6,10 +7,14 @@ namespace LireEnLigne.Controllers
     public class ReservationController : Controller
     {
         private readonly LibraryContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMailService _mailService;
 
-        public ReservationController(LibraryContext context)
+        public ReservationController(LibraryContext context, IHttpContextAccessor httpContextAccessor, IMailService mailService)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _mailService = mailService;
         }
         public IActionResult Index()
         {
@@ -19,25 +24,47 @@ namespace LireEnLigne.Controllers
 
         //get current logged in user
 
+        /* public User GetCurrentUser()
+         {
+             var claimsIdentity = (ClaimsIdentity)User.Identity;
+             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+             if (claim == null || !int.TryParse(claim.Value, out int userId))
+             {
+                 return null;
+             }
+
+             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+             return user;
+         }*/
+
         public User GetCurrentUser()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            // Get the current HttpContext
+            HttpContext currentContext = _httpContextAccessor.HttpContext;
 
-            if (claim == null || !int.TryParse(claim.Value, out int userId))
+            // Check if there is an authenticated user
+            if (currentContext.User.Identity?.IsAuthenticated == true)
             {
-                return null;
+                // Get the username
+                string username = currentContext.User.Identity.Name;
+                //chercher l'utilisateur 
+
+                var user = _context.Users.FirstOrDefault(u => u.Email == username);
+                return user;
             }
+            return null;
 
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
-            return user;
+
+
         }
 
         //demander une reservation
         //la réservation se fait pour un exemplaire d'un livre et non pas du livre lui meme
-
-        public async Task<IActionResult> DemanderReservation(int exemplaireId)
+        [HttpPost]
+        public async Task<IActionResult> DemanderReservation(int exemplaireId, DateTime dateDemande)
         {
           //  return View();
             //récupérer l'utilisateur qui est actuellement connecté
@@ -64,41 +91,71 @@ namespace LireEnLigne.Controllers
             if(exemplaire == null)
             {
                 //Le cas où l'exemplaire n'est pas trouvé 
-                return NotFound();
+                return NotFound("Exemplaire non trouvé");
             }
 
             //Vérifier si l'exemplaire est disponible pour une réservation
-            if(exemplaire.Status == Status.DISPONIBLE && exemplaire.Reservations?.Count == 0) {
+            if (exemplaire.Status != Status.DISPONIBLE || exemplaire.Reservations?.Count != 0) {
+                return BadRequest("L'exemplaire que vous voulez réserver n'est pas disponble pour réservation");
+            }
 
+            //On doit vérifier que la date de réservation est valide
+            //n'est pas entre la date d'emprunt et date de retour prévue
+
+            var dateDebut = exemplaire.Emprunts?.Select(e => e.DateEmprunt).FirstOrDefault();
+            var dateRetourPrevue = exemplaire.Emprunts?.Select(e => e.DateRetourPrevue).FirstOrDefault();
+
+            if(dateDebut !=null && dateRetourPrevue != null)
+            {
+                if(dateDemande >= dateDebut && dateDemande <= dateRetourPrevue)
+                {
+                    return BadRequest("L'exemplaire est déjà emprunté pour cette date. Veuillez choisir une autre");
+                }
+            }
                 //Dans ce créer une nouvelle réservation de cette exemplaire pour l'utilisateur
                 var newReservation = new Reservation
                 {
-                    DateDemande = DateTime.Now,
+                    DateDemande = dateDemande,
                     DateReservation = DateTime.Now,
                     ExemplaireID = exemplaire.ExemplaireID,
                     UserID = currentUser.Id
-                    //a fixer
+                  
                 };
+
+            //ajouter la réservation ) l'exemplaire
+            exemplaire.Reservations ??= new List<Reservation>();
+            exemplaire.Reservations.Add(newReservation);
+           
                 //Enregistrer la réservation 
                 _context.Reservations.Add(newReservation);
                 await _context.SaveChangesAsync();
                 //modifier le status de l'exemplaire pour dire qu'il est déjà réservé
                 exemplaire.Status = Status.RESERVE;
+            try
+            {
                 await _context.SaveChangesAsync(); //pour enregistrer la modification
                 //On doit envoyer un email avec redirection vers la page d'acceuil
+                var mailData = new MailData();
+                mailData.EmailToId = currentUser.Email;
+                mailData.EmailToName = currentUser.Nom;
+                mailData.EmailSubject = "Demande de réservation";
+                mailData.EmailBody = "Votre réservation est effectuée avec succès";
+                _mailService.SendMail(mailData);
+                Ok("Demande de réservation effectuée avec succès");
                 return RedirectToAction("Index", "Home");
+
             }
-            else
+            catch(DbUpdateException)
             {
-                //Le cas où l'exemplaire n'est pas disponible 
-                // developper 
-               //Je dois aussi verifier les dates d'emprunt d'un livre 
-                return NotFound();
+                return StatusCode(500, "Erreur lors de sauvegarde des données");
             }
+               
+            }
+           
             
 
         }
 
 
     }
-}
+
