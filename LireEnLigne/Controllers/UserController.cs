@@ -46,76 +46,82 @@ namespace LireEnLigne.Controllers
 		}
 
 
-		[HttpPost]
-		public async Task<IActionResult> Login(LoginModel model)
-		{
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginModel model)
+        {
 
 
-			if (ModelState.IsValid)
-			{
-				//retrieve user from database based on the entered username
-				var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
-				//var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-				//verify the hashed password
-				// Vérification du mot de passe lors de la connexion
-
-				byte[] storedSalt = user.Salt;// Récupérez le salt correspondant à l'utilisateur depuis la base de données
-											  //byte[] saltBytes = Encoding.ASCII.GetBytes(storedSalt);
-											  //convertir le mot de passe saisi par l'utilisateur
-											  // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-
-				string userPasswordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-					password: model.Password!,
-					salt: storedSalt,
-					prf: KeyDerivationPrf.HMACSHA256,
-					iterationCount: 100000,
-					numBytesRequested: 256 / 8));
-
-				// Comparez enteredPasswordHash avec le hachage stocké dans la base de données
-				// Si les hachages correspondent, le mot de passe est valide
-
-				if (user != null)
-				{
-
-					string userStoredPassword = user.Password;
-					if (userStoredPassword == userPasswordHash)
-					{
-						//authentification avec succès
-						//redirection vers la page d'acceuil
-						//create a new authentication ticket
-						var claims = new List<Claim>
-					{
-						new Claim(ClaimTypes.Name, user.Email),
-						new Claim(ClaimTypes.Role, "Adherant")
-					};
-						var userIdentity = new ClaimsIdentity(claims, "login");
-						var userPrincipal = new ClaimsPrincipal(userIdentity);
-						await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
-						//redirect to the home page
-						return RedirectToAction("Index", "Home");
-
-					}
-					else
-					{
-						ModelState.AddModelError(string.Empty, "password doesn't match");
-					}
-
-				}
-			}
-			else
-			{
-				ModelState.AddModelError(string.Empty, "Invalid username or password");
-
-
-			}
-			return View(model);
-
-
-		}
+            if (ModelState.IsValid)
+            {
+                //retrieve user from database based on the entered username
+                var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
 
 
 
-		[HttpPost]
+
+                // Comparez enteredPasswordHash avec le hachage stocké dans la base de données
+                // Si les hachages correspondent, le mot de passe est valide
+
+                if (user != null)
+                {
+                    //var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                    //verify the hashed password
+                    // Vérification du mot de passe lors de la connexion
+
+                    string userStoredPassword = user.Password;
+                    byte[] storedSalt = user.Salt;// Récupérez le salt correspondant à l'utilisateur depuis la base de données
+                                                  //byte[] saltBytes = Encoding.ASCII.GetBytes(storedSalt);
+                                                  //convertir le mot de passe saisi par l'utilisateur
+                                                  // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+
+                    string userPasswordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: model.Password!,
+                        salt: storedSalt,
+                        prf: KeyDerivationPrf.HMACSHA256,
+                        iterationCount: 100000, numBytesRequested: 256 / 8));
+
+
+                    if (userStoredPassword == userPasswordHash)
+                    {
+                        //authentification avec succès
+                        //redirection vers la page d'acceuil
+                        //create a new authentication ticket
+                        var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.Email),
+                        new Claim(ClaimTypes.Role, "Adherant")
+                    };
+                        var userIdentity = new ClaimsIdentity(claims, "login");
+                        var userPrincipal = new ClaimsPrincipal(userIdentity);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
+                        //redirect to the home page
+                        return RedirectToAction("Index", "Home");
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "password doesn't match");
+                    }
+
+                }
+
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid username or password");
+
+
+                }
+
+
+
+            }
+            return View(model);
+
+        }
+
+
+
+        [HttpPost]
 		public async Task<IActionResult> Register(RegisterModel model)
 		{
 			if (ModelState.IsValid)
